@@ -22,7 +22,7 @@ var svg = d3.select("svg"),
     height = +svg.attr("height");
 
 var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("link", d3.forceLink().cie(function(d) { return d.cie; }))
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -47,7 +47,7 @@ d3.json("diagnosesData.json", function(error, graph) {
           .on("end", dragended));
 
   node.append("title")
-      .text(function(d) { return d.id; });
+      .text(function(d) { return d.cie; });
 
   simulation
       .nodes(graph.nodes)
