@@ -1,37 +1,89 @@
-## Welcome to GitHub Pages
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
 
-You can use the [editor on GitHub](https://github.com/JhonatanBarrera/DiagnosticDataAnalysis/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+.links line {
+  stroke: #aaa;
+}
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+.nodes circle {
+  pointer-events: all;
+  stroke: none;
+  stroke-width: 40px;
+}
 
-### Markdown
+</style>
+<svg width="960" height="600"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
 
-```markdown
-Syntax highlighted code block
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2));
 
-# Header 1
-## Header 2
-### Header 3
+d3.json("diagnosesData.json", function(error, graph) {
+  if (error) throw error;
 
-- Bulleted
-- List
+  var link = svg.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph.links)
+    .enter().append("line");
 
-1. Numbered
-2. List
+  var node = svg.append("g")
+      .attr("class", "nodes")
+    .selectAll("circle")
+    .data(graph.nodes)
+    .enter().append("circle")
+      .attr("r", 2.5)
+      .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
 
-**Bold** and _Italic_ and `Code` text
+  node.append("title")
+      .text(function(d) { return d.id; });
 
-[Link](url) and ![Image](src)
-```
+  simulation
+      .nodes(graph.nodes)
+      .on("tick", ticked);
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+  simulation.force("link")
+      .links(graph.links);
 
-### Jekyll Themes
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/JhonatanBarrera/DiagnosticDataAnalysis/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+    node
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+  }
+});
 
-### Support or Contact
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+</script>
