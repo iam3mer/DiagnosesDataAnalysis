@@ -15,7 +15,7 @@ var simulation = d3.forceSimulation()
 
 //--------------------------------------------------------------------
 
-d3.json("data/diagnosesData.json", function(error, myData) {
+d3.json("data/diagnosesSamplingData.json", function(error, myData) {
   if (error) throw error;
 
   var minLink = d3.min(myData.links.map(d => { return d.weight; }));
