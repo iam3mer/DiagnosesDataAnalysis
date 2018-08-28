@@ -1,0 +1,19 @@
+<style>
+
+.nodes circle {
+  pointer-events: all;
+  stroke: none;
+  stroke-width: 40px;
+}
+
+.container-fluid{
+  padding: 1rem !important;
+  padding-top: 2rem;
+}
+
+.centradoVertical{
+  display: flex;
+  align-items: center;
+}
+
+</style>
