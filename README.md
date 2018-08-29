@@ -1,6 +1,6 @@
 # Diagnoses Data Analysis
 
-[![diagnosesDataAnalysis](https://github.com/JhonatanBarrera/DiagnosesDataAnalysis/blob/master/img/diagnosesDataAnalysis1.png)](https://github.com/JhonatanBarrera/DiagnosesDataAnalysis)
+[![diagnosesDataAnalysis](https://raw.githubusercontent.com/JhonatanBarrera/DiagnosesDataAnalysis/master/img/diagnosesDataAnalysis1.PNG)]
 
 This is a small visualization of data on diagnoses that aims to teach a vision that is useful in understanding population morbidity and that may be of help for decision makers. The diagnoses in Colombia are stored in the Individual Registries of Health Services Delivery - RIPS - and are codified under a standard, International Statistical Classification of Diseases and Related Health Problems -ICD- currently in its tenth version. This classification groups the diagnoses that can be presented in 3 groups, diagnoses for men, women and both genders. The data that I am going to use corresponds to a small sample of RIPS in which the fields corresponding to the sex of the person have been taken, an id that relates the different diagnoses that have been given on the same individual and the diagnoses, respectively. For each consultation there can be four diagnoses, one main and three secondaries. This data has been preprocessed to finally obtain a json file with which to perform the visualization.
 
