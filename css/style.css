@@ -16,4 +16,9 @@
   align-items: center;
 }
 
+#canva{
+	display: flex !important;
+	justify-content: center;
+}
+
 </style>

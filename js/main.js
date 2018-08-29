@@ -16,13 +16,31 @@ var simulation = d3.forceSimulation()
 //--------------------------------------------------------------------
 
 d3.json("data/diagnosesSamplingData.json", function(error, myData) {
-  if (error) throw error;
+  if (error) throw error;console.log(myData.links)
 
   var minLink = d3.min(myData.links.map(d => { return d.weight; }));
   var maxLink = d3.max(myData.links.map(d => { return d.weight; }));
 
-  function normalized (weight) {
-    return (weight-minLink)/(maxLink-minLink);
+  var minNode = d3.min(myData.nodes.map(d => { return d.weight; }));
+  var maxNode = d3.max(myData.nodes.map(d => { return d.weight; }));
+
+  function normalizedLink (weight) {
+    //return (weight-(minLink*7))/((maxLink/14)-(minLink*7));
+    if (weight <= 6) {
+    	return 0.25
+    }
+    return (weight / 60)
+  }
+
+  function normalizedNode (weight) {
+  	// if (maxNode >= 100) {
+  	// 	maxNode = 80;
+  	// }
+    // return (weight-(minNode))/((maxNode)-(minNode));
+    if (weight <= 50){
+    	return 1
+    }
+    return ((weight * 10) / 500);
   }
 
   var link = svg.append("g")
@@ -43,7 +61,13 @@ d3.json("data/diagnosesSamplingData.json", function(error, myData) {
           .on("end", dragended));
 
   node.append("title")
-      .text(d => { return d.cie; });
+      .text(d => { 
+      	var gender;
+      	if (d.group == 1) {gender = "M";};
+      	if (d.group == 2) {gender = "F"};
+      	if (d.group == 3) {gender = "G"};
+      	return "Diag-"+gender+": "+d.cie+", Weight: "+d.weight; 
+      });
 
   simulation
       .nodes(myData.nodes)
@@ -77,23 +101,30 @@ d3.json("data/diagnosesSamplingData.json", function(error, myData) {
 
   d3.select("#watchLinksStrenght").on("click", function () {
     svg.selectAll("line").transition().duration(200)
-       .style("stroke", "#aaa")
-       .style("stroke-opacity", d => { return normalized(d.weight); });
+       .style("stroke", "#585858")
+       .style("stroke-opacity", d => { return normalizedLink (d.weight); });
+    // var value = $("#watchLinksStrenght").val()
+    // disabledNodeStrenght(value);
   })
 
   //.............................................................
 
   d3.select("#watchLinks").on("click", function () {
     svg.selectAll("line").transition().duration(200)
-       .style("stroke", "#aaa")
+       .style("stroke", "#585858")
+       .style("stroke-opacity", 0.35);
+    // var value = $("#watchLinks").val()
+    // disabledNodeStrenght(value);
   })
 
   //.............................................................
 
-  d3.select("#noLinksStrenght").on("click", function () {
-    svg.selectAll("line")
-       .style("stroke-opacity", 0);
-  })
+   d3.select("#noLinksStrenght").on("click", function () {
+  		svg.selectAll("line").transition().duration(200)
+	       .style("stroke-opacity", 0);
+	    // var value = $("#noLinksStrenght").val()
+    	// disabledNodeStrenght(value);
+	}) 
 
   //.............................................................
 
@@ -125,9 +156,14 @@ d3.json("data/diagnosesSamplingData.json", function(error, myData) {
   //.............................................................
 
   d3.select("#weightNodesButton").on("click", function () {
-
-    svg.selectAll("circle").transition().duration(2000)
-       .attr("r", d => { return d.weight; })
+  	if ($("#weightNodesButton").is(":checked")) {
+  		svg.selectAll("circle").transition().duration(2000)
+       .attr("r", d => { return normalizedNode (d.weight); });
+  	} else {
+  		svg.selectAll("circle").transition().duration(2000)
+       .attr("r", 2.5 );
+  	}
+    
   });
 
 
@@ -135,6 +171,16 @@ d3.json("data/diagnosesSamplingData.json", function(error, myData) {
 
 //--------------------------------------------------------------------
 
+// function disabledNodeStrenght(valueLinks) {
+// 	if(valueLinks == "noLinksStrenght"){
+// 		$("#weightNodesButton").prop("disabled",false);
+// 	}else{
+// 		svg.selectAll("circle").transition().duration(2000)
+//        .attr("r", 2.5 );
+// 		$("#weightNodesButton").prop("checked",false);
+// 		$("#weightNodesButton").prop("disabled",true);
+// 	}
+// }
 
 //--------------------------------------------------------------------
 
